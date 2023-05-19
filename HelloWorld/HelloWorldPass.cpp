@@ -1,4 +1,3 @@
-#include "llvm/Pass.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
@@ -7,7 +6,8 @@ using namespace llvm;
 
 namespace {
 
-	class HelloWorld : public PassInfoMixIn<HelloWorld> {
+	class HelloWorld : public PassInfoMixin<HelloWorld> {
+		public:
 		PreservedAnalyses run(Function &aFunction, FunctionAnalysisManager& aManager) {
 			// just print out all the name of the functions in this module
 			errs() << aFunction.getName() << '\n';
