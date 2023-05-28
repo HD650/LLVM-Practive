@@ -9,6 +9,11 @@ set(PASS_NAME TestingPass)
 # include the basic build script
 include(../etc/ConfigLLVM.cmake)
 
+# specify the llvm ir quick test file
+set(DEBUG_MODE_TEST_FILE 
+  "/lib/llvm-15/llvm-test/MergeBB_conditional_branch_merged.ll" PATH 
+  "The llvm ir input files for quick test this pass")
+
 # compile the cpp to produce a dynamic link lib
 set(SOURCES
   TestingPass.cpp
@@ -20,3 +25,5 @@ add_library(${TARGET_NAME} SHARED ${SOURCES} ${HEADERS})
 
 # generate a debug target
 include(../etc/DebugTarget.cmake)
+
+message(STATUS "DEBUG_MODE_TEST_FILE: ${DEBUG_MODE_TEST_FILE}")

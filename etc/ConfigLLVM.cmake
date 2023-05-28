@@ -5,7 +5,7 @@ set(LLVM_INSTALL_DIR
 
 # specify the llvm ir quick test file
 set(DEBUG_MODE_TEST_FILE 
-  "/lib/llvm-15/llvm-test/test.ll" CACHE PATH 
+  "/lib/llvm-15/llvm-test/test.ll" PATH 
   "The llvm ir input files for quick test this pass")
 
 # location of LLVMConfig.cmake
