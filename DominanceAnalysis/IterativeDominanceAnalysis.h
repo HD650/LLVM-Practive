@@ -33,12 +33,12 @@ namespace llvmPractice {
 			// Note that it's not implemented by set intersect, we are actually searching
 			// for the common ancestor the B and C
 			//           [A]
-			//  		/   \
-			//  	   /     \
+			//          /   \
+			//         /     \
 			//       [B]     [C]
-			//	      \       /
+			//        \       /
 			//         \     /
-			// 	         [D]
+			//           [D]
 			llvm::BasicBlock* intersect(llvm::BasicBlock* aU, llvm::BasicBlock* aV);
 			// immediate dominator info, a -> b means b is the idom of a
 			std::unordered_map<llvm::BasicBlock*, llvm::BasicBlock*> fIDom;
