@@ -1,11 +1,11 @@
 # specify the llvm installation dir
 set(LLVM_INSTALL_DIR 
-    "/local-ssd/zhikangz/LLVM/llvm-install" CACHE PATH 
+    "/lib/llvm-15" CACHE PATH 
   "LLVM installation directory")
 
 # specify the llvm ir quick test file
 set(DEBUG_MODE_TEST_FILE 
-    "/local-ssd/zhikangz/LLVM/llvm-tutor/test/hello.ll" PATH 
+    "/lib/llvm-15/llvm-test/test.ll" PATH 
   "The llvm ir input files for quick test this pass")
 
 # location of LLVMConfig.cmake

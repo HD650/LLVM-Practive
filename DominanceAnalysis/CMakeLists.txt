@@ -23,7 +23,12 @@ set(HEADERS
   IterativeDominanceAnalysis.h)
 add_library(${TARGET_NAME} SHARED ${SOURCES} ${HEADERS})
 
+# compile the cpp in the unittest folder to produce a test executable
+set(TESTS ./unittest/main.cpp
+  ./unittest/tIterativeDominanceAnalysis.cpp)
+
 # generate a debug target
 include(../etc/DebugTarget.cmake)
 
-message(STATUS "DEBUG_MODE_TEST_FILE: ${DEBUG_MODE_TEST_FILE}")
+# build test and run
+include(../etc/Unittest.cmake)

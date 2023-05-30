@@ -3,9 +3,10 @@
 ## Environment set up
 Need to install:
 1. LLVM 15 (build from source or prebuilt distribution)
-2. gdb
+2. GDB
 3. LLVM Lit
-4. cmake
+4. Cmake
+5. Google test
 
 
 ## HelloWorld Pass
