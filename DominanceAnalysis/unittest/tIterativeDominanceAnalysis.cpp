@@ -11,8 +11,7 @@ namespace {
     {
         llvm::SMDiagnostic err;
         std::unique_ptr<llvm::Module> module = llvm::parseAssemblyString(aIr, err, aCtx);
-        if(!module)
-            assert(false);
+        assert(module && "The IR can not be properly parse!");
         return module;
     }
 

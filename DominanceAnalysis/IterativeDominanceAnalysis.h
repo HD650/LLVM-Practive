@@ -9,6 +9,9 @@ namespace llvmPractice {
 
 	// The Simple Fast Dominator Algorithm
 	// Keith D. Cooper, Timothy J. Harvey, and Ken Kennedy
+	// This is an iterative algorithm that computes the dominator tree
+	// of a function. 
+	// The key idea is dataflow analysis and immediate dominator
 
 	class IterativeDominanceAnalysis : public IDominanceAnalysis {
 		public:

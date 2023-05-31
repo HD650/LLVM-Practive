@@ -17,10 +17,12 @@ set(DEBUG_MODE_TEST_FILE
 # compile the cpp to produce a dynamic link lib
 set(SOURCES
   TestingPass.cpp
-  IterativeDominanceAnalysis.cpp)
+  IterativeDominanceAnalysis.cpp
+  DominatorTree.cpp)
 set(HEADERS
   IDominanceAnalysis.h
-  IterativeDominanceAnalysis.h)
+  IterativeDominanceAnalysis.h
+  DominatorTree.h)
 add_library(${TARGET_NAME} SHARED ${SOURCES} ${HEADERS})
 
 # compile the cpp in the unittest folder to produce a test executable
