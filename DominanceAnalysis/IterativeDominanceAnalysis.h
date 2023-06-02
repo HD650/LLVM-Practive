@@ -1,4 +1,5 @@
 #include "IDominanceAnalysis.h"
+#include "DominatorTree.h"
 #include <unordered_map>
 #include <set>
 #include <list>
@@ -21,15 +22,18 @@ namespace llvmPractice {
 			IterativeDominanceAnalysis() = delete;
 			// run the analysis
 			virtual void run() override;
-			void doAnalysis(llvm::Function& aFcn);
 			// check whether a basic block dominates another
 			virtual bool dominates(const llvm::BasicBlock *aBB1, const llvm::BasicBlock* aBB2) const override;
 			// print the dominance graph/tree
 			virtual void debugDump() override;
+			// the algorithm result is saved in a IDom map initially, now transcript it into a tree
+			void generateDominatorTree();
+			// check whether the result of the dominator tree is the same as the dominator map
+			bool verify();
 
 		private:
 			// sort the basic blocks in the give function in reversed post order
-			void generateReversePostOrder(llvm::Function& aFcn);
+			void generateReversePostOrder();
 			void dfs(llvm::BasicBlock* aBB);
 			// When computing the idom of D, we need to intersect the idom of B and C
 			// the result will be A
@@ -43,11 +47,14 @@ namespace llvmPractice {
 			//         \     /
 			//           [D]
 			llvm::BasicBlock* intersect(llvm::BasicBlock* aU, llvm::BasicBlock* aV);
+			
 			// immediate dominator info, a -> b means b is the idom of a
 			std::unordered_map<llvm::BasicBlock*, llvm::BasicBlock*> fIDom;
 			std::unordered_map<llvm::BasicBlock*, size_t> fBBRpoNumer;
 			std::deque<llvm::BasicBlock*> fSortedBB;
 			std::unordered_set<llvm::BasicBlock*> fVisitedBB;
+			std::unique_ptr<DominatorTree> fDomTree;
+			llvm::Function& fFcn;
 			size_t fRpoNum;
 	};
 

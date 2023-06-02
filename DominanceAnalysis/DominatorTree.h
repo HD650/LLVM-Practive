@@ -54,9 +54,9 @@ namespace llvmPractice {
         DominatorTree(); // for empty tree
 
         // check if A dominates B
-        bool dominate(llvm::BasicBlock* aDominator, llvm::BasicBlock* aDominated);
+        bool dominate(const llvm::BasicBlock* aDominator, const llvm::BasicBlock* aDominated);
         // check if A dominates B, A != B
-        bool restrictedDominate(llvm::BasicBlock* aDominator, llvm::BasicBlock* aDominated);
+        bool restrictedDominate(const llvm::BasicBlock* aDominator, const llvm::BasicBlock* aDominated);
 
         // recompute the DFS number of all the nodes if DFS numbers are invalid
         void updateDFSNum();
@@ -66,13 +66,17 @@ namespace llvmPractice {
 
         void debugDump() const;
 
+        private:
+        
+        void printTree(const DominatorTreeNode* aNode, const std::string& prefix = "", bool isLeft = true) const;
+
         // the root of the tree, always the entry block
         // note that if we need to build a post dominance tree,
         // it could have multiple roots, since a function could have
         // multiple exit point but only one entry point
         DominatorTreeNode* fRoot;
         // need a map to efficiently find a tree node by a BB
-        llvm::DenseMap<llvm::BasicBlock*, std::unique_ptr<DominatorTreeNode>> fDomTreeNodes;
+        llvm::DenseMap<const llvm::BasicBlock*, std::unique_ptr<DominatorTreeNode>> fDomTreeNodes;
 
         // the flag indicates whether the dfs number of nodes up to date
         bool fIsDFSNumValid = false;

@@ -1,4 +1,7 @@
 #include "DominatorTree.h"
+#include "llvm/Support/raw_ostream.h"
+
+#include <queue>
 
 namespace llvmPractice {
     DominatorTreeNode::DominatorTreeNode(llvm::BasicBlock* aBB, DominatorTreeNode* aIDom) :
@@ -70,7 +73,7 @@ namespace llvmPractice {
             size_t nextChild = workList.back().second;
 
             // this node has no more children to traverse, pop it
-            if(nextChild > curr->fChildren.size())
+            if(nextChild >= curr->fChildren.size())
             {
                 curr->fDSFNumOut = DFSNum++; // this node out of stack
                 workList.pop_back();
@@ -85,14 +88,14 @@ namespace llvmPractice {
         }
     }
 
-    bool DominatorTree::dominate(llvm::BasicBlock* aDominator, llvm::BasicBlock* aDominated)
+    bool DominatorTree::dominate(const llvm::BasicBlock* aDominator, const llvm::BasicBlock* aDominated)
     {
         if(aDominated == aDominator)
             return true; // self dominance
         return restrictedDominate(aDominator, aDominated);
     }
     
-    bool DominatorTree::restrictedDominate(llvm::BasicBlock* aDominator, llvm::BasicBlock* aDominated)
+    bool DominatorTree::restrictedDominate(const llvm::BasicBlock* aDominator, const llvm::BasicBlock* aDominated)
     {
         assert(fDomTreeNodes.find(aDominator) != fDomTreeNodes.end());
         assert(fDomTreeNodes.find(aDominated) != fDomTreeNodes.end());
@@ -101,12 +104,26 @@ namespace llvmPractice {
         
         // a.in > b.in means a is deeper than b or a is righter than b
         // b.out > a.out means a is deeper than b or a is lefter than b
-        return aDominatorNode->fDSFNumIn > aDominatedNode->fDSFNumIn &&
-               aDominatedNode->fDSFNumOut > aDominatorNode->fDSFNumOut;
+        return aDominatorNode->fDSFNumIn < aDominatedNode->fDSFNumIn &&
+               aDominatedNode->fDSFNumOut < aDominatorNode->fDSFNumOut;
     }
 
     void DominatorTree::debugDump() const
     {
-        
+        printTree(fRoot);
+    }
+
+    void DominatorTree::printTree(const DominatorTreeNode* aNode, const std::string& prefix, bool isLeft) const
+    {
+        // thank you GPT-4 for this code!
+        llvm::errs() << prefix;
+        llvm::errs() << (isLeft ? "├──" : "└──" );
+    
+        llvm::errs() << "[" << aNode->fBB->getName().str() << ",";
+        llvm::errs() << aNode->fDSFNumIn << "," << aNode->fDSFNumOut << "]\n";
+    
+        for (int i = 0; i < aNode->fChildren.size(); i++) {
+            printTree(aNode->fChildren[i], prefix + (isLeft ? "│   " : "    "), i < aNode->fChildren.size() - 1);
+        }
     }
 }

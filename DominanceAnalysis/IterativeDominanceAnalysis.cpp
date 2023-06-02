@@ -8,19 +8,15 @@
 
 using namespace llvmPractice;
 
-IterativeDominanceAnalysis::IterativeDominanceAnalysis(llvm::Function & aFcn) : fRpoNum(aFcn.getBasicBlockList().size())
+IterativeDominanceAnalysis::IterativeDominanceAnalysis(llvm::Function & aFcn) : fFcn(aFcn), fRpoNum(fFcn.getBasicBlockList().size())
 {
 	// since we will do a dataflow analysis, we need to traverse the basic blocks
 	// of the function in reverse post order (predecessor always got visited before
 	// successor)
-	generateReversePostOrder(aFcn);
-	doAnalysis(aFcn);
-	debugDump();
-}
-
-void IterativeDominanceAnalysis::run()
-{
-	
+	generateReversePostOrder();
+	run();
+	generateDominatorTree();
+	assert(verify() && "Dominator tree does not match the result?!");
 }
 
 llvm::BasicBlock* IterativeDominanceAnalysis::intersect(llvm::BasicBlock* aU, llvm::BasicBlock* aV)
@@ -39,13 +35,13 @@ llvm::BasicBlock* IterativeDominanceAnalysis::intersect(llvm::BasicBlock* aU, ll
 	return aU;
 }
 
-void IterativeDominanceAnalysis::doAnalysis(llvm::Function& aFcn)
+void IterativeDominanceAnalysis::run()
 {
 	// the initial state of the analysis, we know no information but the 
 	// entry block dominates the entry block itself
 	for(llvm::BasicBlock* bb : fSortedBB)
 		fIDom[bb] = nullptr;
-	fIDom[&aFcn.getEntryBlock()] = &aFcn.getEntryBlock();
+	fIDom[&fFcn.getEntryBlock()] = &fFcn.getEntryBlock();
 
 
 	// flag to determins whether to end this iterative algorithm
@@ -57,7 +53,7 @@ void IterativeDominanceAnalysis::doAnalysis(llvm::Function& aFcn)
 		// traverse the cfg in reverse post order
 		for(llvm::BasicBlock* bb : fSortedBB)
 		{
-			if(bb ==  &aFcn.getEntryBlock())
+			if(bb ==  &fFcn.getEntryBlock())
 				continue;
 			
 			llvm::BasicBlock* u = nullptr;
@@ -92,7 +88,7 @@ void IterativeDominanceAnalysis::doAnalysis(llvm::Function& aFcn)
 
 bool IterativeDominanceAnalysis::dominates(const llvm::BasicBlock *aBB1, const llvm::BasicBlock* aBB2) const
 {
-	return true;
+	return fDomTree->dominate(aBB1, aBB2);
 }
 
 
@@ -105,11 +101,11 @@ void IterativeDominanceAnalysis::debugDump()
 	}
 }
 
-void IterativeDominanceAnalysis::generateReversePostOrder(llvm::Function& aFcn)
+void IterativeDominanceAnalysis::generateReversePostOrder()
 {
 	fVisitedBB.clear();
 	// dfs the cfg and record the rpo
-	dfs(&(aFcn.getEntryBlock()));
+	dfs(&(fFcn.getEntryBlock()));
 }
 
 void IterativeDominanceAnalysis::dfs(llvm::BasicBlock* aBB)
@@ -125,4 +121,36 @@ void IterativeDominanceAnalysis::dfs(llvm::BasicBlock* aBB)
 	fRpoNum -= 1;
 	fBBRpoNumer[aBB] = fRpoNum;
 	fSortedBB.push_front(aBB);
+}
+
+void IterativeDominanceAnalysis::generateDominatorTree()
+{
+	if(fDomTree)
+		return;
+	
+	// entry BB is the root of the tree
+	fDomTree = std::make_unique<DominatorTree>(&(fFcn.getEntryBlock()));
+	for(std::pair<llvm::BasicBlock *const, llvm::BasicBlock*>& idom : fIDom)
+	{
+		fDomTree->addEdge(idom.second, idom.first);
+	}
+
+	fDomTree->updateDFSNum();
+}
+
+bool IterativeDominanceAnalysis::verify()
+{
+	if(!fDomTree)
+		return false;
+	
+	fDomTree->debugDump();
+
+	// check each Idom pair
+	// this isn't the complete check, a complete check is O(N^2)
+	for(std::pair<llvm::BasicBlock *const, llvm::BasicBlock*>& idom : fIDom)
+	{
+		if(!fDomTree->dominate(idom.second, idom.first))
+			return false;
+	}
+	return true;
 }
