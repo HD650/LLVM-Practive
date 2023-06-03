@@ -97,8 +97,10 @@ namespace llvmPractice {
     
     bool DominatorTree::restrictedDominate(const llvm::BasicBlock* aDominator, const llvm::BasicBlock* aDominated)
     {
-        assert(fDomTreeNodes.find(aDominator) != fDomTreeNodes.end());
-        assert(fDomTreeNodes.find(aDominated) != fDomTreeNodes.end());
+        if(fDomTreeNodes.find(aDominator) == fDomTreeNodes.end() || 
+           fDomTreeNodes.find(aDominated) == fDomTreeNodes.end())
+           return false; // unreachable BB
+
         DominatorTreeNode* aDominatorNode = fDomTreeNodes[aDominator].get();
         DominatorTreeNode* aDominatedNode = fDomTreeNodes[aDominated].get();
         
