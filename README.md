@@ -19,7 +19,7 @@ Also a `gdb` target is generated support debugging the pass in the shared librar
 This pass and its build system is the base of future passes.
 
 ## Dominance Analysis (WIP)
-** A function analysis that compute the dominator information. Dominator info is used extensively in compiler optimization. The unittest system is implemented in this analysis to check the correctness of the analysis.**
+**A function analysis that compute the dominator information. Dominator info is used extensively in compiler optimization. The unittest system is implemented in this analysis to check the correctness of the analysis.**
 
 DominanceAnalysis builds a pass as shared library that invokes an analysis. The analysis library contains:
 1. implementation of the Simple Fast Dominator Algorithm and the Lengauer-Tarjan Algorithm (WIP).
