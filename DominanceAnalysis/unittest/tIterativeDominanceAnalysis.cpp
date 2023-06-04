@@ -146,7 +146,8 @@ namespace {
     {
         llvm::LLVMContext ctx;
         const char* input = R"(
-            define void @foo(i32 %in) {
+            define void @foo(i32 %in) 
+            {
                 bb1:
                     %condition = icmp sgt i32 %in, 50
                     br i1 %condition, label %bb1, label %bb2
@@ -185,7 +186,8 @@ namespace {
         //        |    \|
         //       (D)   (E)
         const char* input = R"(
-            define void @foo() {
+            define void @foo() 
+            {
                 A:
                     br i1 undef, label %B, label %C
                 B:
@@ -196,7 +198,7 @@ namespace {
                     ret void
                 E:
                     ret void
-        }
+            }
         )";
         std::unique_ptr<llvm::Module> parsedModule = parseIR(ctx, input);
         llvm::Function* foo = parsedModule->getFunction("foo");
