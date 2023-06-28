@@ -25,3 +25,6 @@ DominanceAnalysis builds a pass as shared library that invokes an analysis. The 
 1. implementation of the Simple Fast Dominator Algorithm and the Lengauer-Tarjan Algorithm (WIP).
 2. implementation of a dominator tree that can retrieve dominance information efficiently.
 3. a gtest suit that checks the correctness of the implementation of the analysis.
+
+## Sparse Conditional Constant Propagation
+**A optimization pass that do some sort of const propagation and dead code elimination together. It's a good practice of writing a dataflow analysis.**
